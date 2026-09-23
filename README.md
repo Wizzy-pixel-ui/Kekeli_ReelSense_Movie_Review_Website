@@ -2,7 +2,7 @@
 
 ![Kekeli ReelSense preview](preview/website-preview.webp)
 
-**Live website:** [Open Kekeli ReelSense](https://Wizzy-pixel-ui.github.io/Kekeli_ReelSense_Movie_Review_Website/)
+**Live website:** [Open Kekeli ReelSense](https://drybeanaprv-c52lkgj3.manus.space/reelsense)
 
 Kekeli ReelSense is the Task 2 movie-review sentiment project presented as a cinematic web experience. It uses the **Negation-Aware Contrastive Centroid Classification** model created for the Daryl Tech & Educational Network AI and Machine Learning internship.
 
@@ -75,7 +75,7 @@ Kekeli_ReelSense_Movie_Review_Website/
 
 ## Permanent website
 
-The `docs/` folder is a self-contained browser build. It includes the trained TF-IDF vocabulary, IDF weights, centroids, feature weights, and neutral margin in `model.json`. The browser performs preprocessing and inference locally, so the published site does not depend on the temporary Flask preview service.
+The `docs/` folder is a self-contained browser build. It includes the trained TF-IDF vocabulary, IDF weights, centroids, feature weights, and neutral margin in `model.json`. The permanent public version is published as the `/reelsense` route inside the same Manus WebDev domain as the Task 1 website. The browser build remains in this repository for reproducibility and static hosting.
 
 ## Local Flask version
 
