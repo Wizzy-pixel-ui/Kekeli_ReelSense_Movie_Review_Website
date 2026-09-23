@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kekeli ReelSense — Movie Review Intelligence</title>
+  <meta name="description" content="Kekeli ReelSense classifies movie reviews with a negation-aware contrastive centroid model." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Kekeli ReelSense home">
+      <span class="k-logo">K</span>
+      <span class="brand-name">KEKELI <b>REELSENSE</b></span>
+    </a>
+    <div class="nav-right"><span class="live-dot"></span><span>MODEL ONLINE</span><span class="nav-line"></span><span>TASK 2 / NLP</span></div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="kicker"><span class="red-bar"></span> A different kind of review</div>
+        <h1>Feel the<br /><span>story.</span></h1>
+        <p class="hero-text">Kekeli ReelSense reads the language behind a movie review and maps its emotional direction — negative, neutral, or positive.</p>
+        <div class="hero-stats"><div><strong>3</strong><span>sentiment lanes</span></div><div><strong>NOT_</strong><span>negation aware</span></div><div><strong>CC</strong><span>custom model</span></div></div>
+      </div>
+      <div class="hero-poster" aria-hidden="true">
+        <div class="poster-top">A KEKELI ORIGINAL</div>
+        <div class="poster-center"><span class="poster-k">K</span><span class="poster-word">REEL<br />SENSE</span></div>
+        <div class="poster-bottom"><span>THE LANGUAGE<br />OF CINEMA</span><span>2026<br />VOL. 01</span></div>
+        <div class="poster-orbit"></div><div class="poster-orbit orbit-two"></div>
+      </div>
+    </section>
+
+    <section class="analyzer" id="analyzer">
+      <div class="section-head"><div><p class="section-number">01 / YOUR REVIEW</p><h2>What did you think?</h2></div><span class="head-note">Write like a critic.<br />We’ll read like a model.</span></div>
+      <div class="analyzer-grid">
+        <div class="review-card">
+          <div class="card-label"><span>REVIEW INPUT</span><span id="charCount">0 / 5000</span></div>
+          <textarea id="reviewInput" maxlength="5000" placeholder="The performances were unforgettable, but the pacing never found its rhythm..."></textarea>
+          <div class="review-actions"><div class="examples"><button type="button" data-example="The cinematography was stunning and the performances were unforgettable.">Positive</button><button type="button" data-example="It was fine. Nothing surprised me, but nothing ruined the evening either.">Neutral</button><button type="button" data-example="I did not enjoy the film. The story was dull and the ending was disappointing.">Negative</button></div><button class="analyze-btn" id="analyzeBtn" type="button">Read the review <span>↗</span></button></div>
+          <p class="input-error" id="inputError"></p>
+        </div>
+        <aside class="result-card" id="resultCard" aria-live="polite">
+          <div class="card-label result-label"><span>MODEL OUTPUT</span><span class="result-dot"></span></div>
+          <div class="empty-result" id="emptyResult"><div class="signal-ring"><span>K</span></div><p>Awaiting your take.</p><small>Submit a review to reveal its sentiment.</small></div>
+          <div class="filled-result" id="filledResult" hidden>
+            <p class="result-overline">THE REVIEW LEANS</p><h3 id="sentimentTitle">Positive</h3><div class="confidence"><span>CONFIDENCE</span><strong id="confidenceValue">0%</strong></div>
+            <div class="score-list"><div class="score-row"><span>Positive</span><div><i id="positiveBar"></i></div><b id="positiveScore">0%</b></div><div class="score-row"><span>Neutral</span><div><i id="neutralBar"></i></div><b id="neutralScore">0%</b></div><div class="score-row"><span>Negative</span><div><i id="negativeBar"></i></div><b id="negativeScore">0%</b></div></div>
+            <div class="model-note"><span>✦</span><p>Negation-aware contrastive centroid classification</p></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="method"><p class="section-number">02 / BEHIND THE TAKE</p><div class="method-grid"><div><span class="method-index">01</span><h3>Negation matters</h3><p>“Good” and “not good” are different signals. The tokenizer marks nearby terms when a negation appears.</p></div><div><span class="method-index">02</span><h3>Words become shape</h3><p>TF-IDF turns the review into a weighted language fingerprint using unigrams and bigrams.</p></div><div><span class="method-index">03</span><h3>Classes have a center</h3><p>The custom model compares the review with learned sentiment centroids and keeps uncertainty visible.</p></div></div></section>
+  </main>
+
+  <footer><span><span class="footer-k">K</span> KEKELI REELSENSE</span><span>DARYL TECH & EDUCATIONAL NETWORK · AI / ML INTERNSHIP</span><span>BUILT WITH A CUSTOM SENTIMENT MODEL</span></footer>
+  <script>
+    const input = document.getElementById('reviewInput');
+    const count = document.getElementById('charCount');
+    const button = document.getElementById('analyzeBtn');
+    const error = document.getElementById('inputError');
+    const empty = document.getElementById('emptyResult');
+    const filled = document.getElementById('filledResult');
+    input.addEventListener('input', () => { count.textContent = `${input.value.length} / 5000`; });
+    document.querySelectorAll('[data-example]').forEach((chip) => chip.addEventListener('click', () => { input.value = chip.dataset.example; input.dispatchEvent(new Event('input')); input.focus(); }));
+    const titleCase = (value) => value.charAt(0).toUpperCase() + value.slice(1);
+    const setScore = (name, value) => { document.getElementById(`${name}Bar`).style.width = `${Math.max(value * 100, 1)}%`; document.getElementById(`${name}Score`).textContent = `${Math.round(value * 100)}%`; };
+    button.addEventListener('click', async () => {
+      error.textContent = '';
+      if (input.value.trim().length < 3) { error.textContent = 'Write a little more so the model has something to read.'; return; }
+      button.disabled = true; button.innerHTML = 'Reading the review… <span>◌</span>';
+      try {
+        const response = await fetch('/predict', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({review: input.value}) });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'The model could not read this review.');
+        document.getElementById('sentimentTitle').textContent = titleCase(data.sentiment);
+        document.getElementById('confidenceValue').textContent = `${Math.round(data.confidence * 100)}%`;
+        setScore('positive', data.scores.positive); setScore('neutral', data.scores.neutral); setScore('negative', data.scores.negative);
+        empty.hidden = true; filled.hidden = false;
+      } catch (err) { error.textContent = err.message; } finally { button.disabled = false; button.innerHTML = 'Read the review <span>↗</span>'; }
+    });
+  </script>
+</body>
+</html>
